@@ -53,8 +53,11 @@ class Pgsql implements ProvidesDatabase
 
         $result = $this->queryManager->setConnection($connection)
                      ->process(function () use ($config) {
-                         $this->statement("CREATE USER \"{$config['username']}\" WITH PASSWORD '{$config['password']}'");
-                         $this->statement("CREATE DATABASE \"{$config['database']}\" WITH OWNER = \"{$config['username']}\"");
+                        $username = $config['username'];
+                        $password = $config['password'];
+                        $database = $config['database'];
+                        $this->statement("CREATE USER $username WITH PASSWORD $password");
+                        $this->statement("CREATE DATABASE $database WITH OWNER = $username");
                      })
                      ->getStatus();
 
