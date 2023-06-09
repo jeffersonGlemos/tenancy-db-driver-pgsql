@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "laravel/framework": "^7.0|^8.0|^9.0|^10.0",
-        "tenancy/hooks-database": "^1.0.3",
+        "tenancy/hooks-database": "^3.0.3",
         "tenancy/affects-connections": "*",
         "doctrine/dbal": "^2.9"
     },
