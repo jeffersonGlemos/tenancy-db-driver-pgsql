@@ -52,14 +52,14 @@ class Pgsql implements ProvidesDatabase
         $connection = $this->system($tenant);
 
         $result = $this->queryManager->setConnection($connection)
-                     ->process(function () use ($config) {
-                        $username = $config['username'];
-                        $password = $config['password'];
-                        $database = $config['database'];
-                        $this->statement("CREATE USER $username WITH PASSWORD $password");
-                        $this->statement("CREATE DATABASE $database WITH OWNER = $username");
-                     })
-                     ->getStatus();
+                                     ->process(function () use ($config) {
+                                         $username = $config['username'];
+                                         $password = $config['password'];
+                                         $database = $config['database'];
+                                         $this->statement("CREATE USER $username WITH PASSWORD '$password'");
+                                         $this->statement("CREATE DATABASE $database WITH OWNER = $username");
+                                     })
+                                     ->getStatus();
 
         event(new Events\Created($tenant, $this, $result));
 
@@ -79,16 +79,21 @@ class Pgsql implements ProvidesDatabase
         $connection = $this->system($tenant);
 
         $result = $this->queryManager->setConnection($connection)
-                     ->processTransaction(function () use ($config) {
-                         $this->statement("ALTER USER \"{$config['oldUsername']}\" RENAME TO \"{$config['username']}\"");
-                         $this->statement("ALTER USER \"{$config['username']}\" WITH PASSWORD '{$config['password']}'");
-                     })
-                     ->process(function () use ($config) {
-                         $this->statement("CREATE DATABASE \"{$config['database']}\" WITH OWNER = \"{$config['username']}\" TEMPLATE = \"{$config['oldUsername']}\"");
-                         // Add database drop statement as last statement
-                         $this->statement("DROP DATABASE \"{$config['oldUsername']}\"");
-                     })
-                     ->getStatus();
+                                     ->processTransaction(function () use ($config) {
+                                         $oldUsername = $config['oldUsername'];
+                                         $username = $config['username'];
+                                         $this->statement("ALTER USER $oldUsername RENAME TO $username");
+                                         $this->statement("ALTER USER $username WITH PASSWORD '{$config['password']}'");
+                                     })
+                                     ->process(function () use ($config) {
+                                         $oldUsername = $config['oldUsername'];
+                                         $username = $config['username'];
+                                         $database = $config['database'];
+                                         $this->statement("CREATE DATABASE $database WITH OWNER = $username TEMPLATE = $oldUsername");
+                                         // Add database drop statement as last statement
+                                         $this->statement("DROP DATABASE $oldUsername");
+                                     })
+                                     ->getStatus();
 
         event(new Events\Updated($tenant, $this, $result));
 
@@ -102,11 +107,13 @@ class Pgsql implements ProvidesDatabase
         event(new Events\Deleting($tenant, $config, $this));
 
         $result = $this->queryManager->setConnection($this->system($tenant))
-            ->process(function () use ($config) {
-                $this->statement("DROP DATABASE \"{$config['database']}\"");
-                $this->statement("DROP USER \"{$config['username']}\"");
-            })
-            ->getStatus();
+                                     ->process(function () use ($config) {
+                                         $username = $config['username'];
+                                         $database = $config['database'];
+                                         $this->statement("DROP DATABASE $database");
+                                         $this->statement("DROP USER $username");
+                                     })
+                                     ->getStatus();
 
         event(new Events\Deleted($tenant, $this, $result));
 
