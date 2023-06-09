@@ -7,7 +7,7 @@
         "laravel/framework": "^7.0|^8.0|^9.0|^10.0",
         "tenancy/hooks-database": "^2.0",
         "tenancy/affects-connections": "*",
-        "doctrine/dbal": "^2.9"
+        "doctrine/dbal": "^3.6"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.7",
