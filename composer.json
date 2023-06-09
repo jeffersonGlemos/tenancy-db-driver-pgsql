@@ -4,15 +4,15 @@
     "keywords": ["database", "tenancy", "pgsql", "postgresql"],
     "license": "MIT",
     "require": {
-        "laravel/framework": "^7.0",
+        "laravel/framework": "^7.0|^8.0|^9.0|^10.0",
         "tenancy/hooks-database": "^1.0.3",
         "tenancy/affects-connections": "*",
         "doctrine/dbal": "^2.9"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.7",
-        "laravel/laravel": "^7.0",
-        "phpunit/phpunit": "^8.0",
+        "laravel/laravel": "^7.0|^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^8.0|^9.0|^10.0",
         "mockery/mockery": "^1.0",
         "tenancy/hooks-migration": "*",
         "tenancy/testing": "*"
